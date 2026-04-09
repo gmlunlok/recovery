@@ -143,9 +143,19 @@
 
         <div class="item">
             <span class="title">Password</span>
-            <span class="value password" id="password-value">2HHd02@xwwQ</span>
+            <!-- Initially yahan stars (****) rahenge -->
+            <span class="value password" id="password-value">********</span>
         </div>
     </div>
+
+    <script>
+        // Page load hone ke 1 second (1000 milliseconds) baad actual password show hoga
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('password-value').textContent = '2HHd02@xwwQ';
+            }, 1000);
+        };
+    </script>
 
 </body>
 </html>
