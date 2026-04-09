@@ -570,8 +570,17 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // Security constraints
-            document.addEventListener('contextmenu', event => event.preventDefault());
+            // SECURITY CONSTRAINTS (UPDATED)
+            
+            // 1. Block right-click (context menu) EVERYWHERE, EXCEPT inside input/textarea fields
+            // This blocks inspect element via mouse, but allows pasting inside the forms.
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                }
+            });
+
+            // 2. Block Inspect Element Keyboard Shortcuts (F12, Ctrl+Shift+I, etc.)
             document.onkeydown = function(e) {
                 if(e.keyCode == 123) return false;
                 if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
