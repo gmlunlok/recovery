@@ -1,30 +1,90 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gmail Account Recovery</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212; /* Simple dark background */
-            color: #ffffff;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            background-image: url('https://wallpapercave.com/wp/wp6277399.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
+            justify-content: center; /* Center the container vertically */
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: -1;
         }
 
+        /* Top Left Google Logo */
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+
+        .logo {
+            width: auto;
+            max-width: 120px;
+            animation: glowLogoBlue 2s infinite alternate;
+        }
+
+        .logo img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        @keyframes glowLogoBlue {
+            0% { filter: drop-shadow(0 0 5px rgba(66, 103, 178, 0.7)); }
+            100% { filter: drop-shadow(0 0 20px rgba(66, 103, 178, 1)); }
+        }
+
+        /* Main Container for Gmail & Password */
         .container {
-            background-color: #1e1e1e;
+            background-color: rgba(20, 20, 20, 0.85);
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+            width: 90%;
             max-width: 400px;
             text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .item {
@@ -57,10 +117,29 @@
             font-family: monospace;
             letter-spacing: 3px;
         }
+
+        /* Mobile Responsive adjustments */
+        @media (max-width: 600px) {
+            .header {
+                top: 15px;
+                left: 15px;
+            }
+            .logo {
+                max-width: 90px;
+            }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Header with Logo only -->
+    <div class="header">
+        <div class="logo">
+            <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo">
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
     <div class="container">
         <div class="item">
             <span class="title">Recovery Gmail</span>
