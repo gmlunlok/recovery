@@ -130,7 +130,7 @@
         
         h1 {
             font-size: 22px;
-            color: #00cc00;
+            color: #4285F4;
             margin-bottom: 15px;
             text-align: left;
         }
@@ -144,16 +144,60 @@
         }
         
         .highlight {
-            color: #4285F4;
+            color: #34A853;
             font-weight: bold;
         }
-        
-        .english-text {
-            display: block;
-        }
-        
-        .hindi-text {
+
+        .text-block {
             display: none;
+        }
+
+        /* POPUP STYLES */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .popup-box {
+            background: #1a1a1a;
+            border: 2px solid #ea4335;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(234, 67, 53, 0.4);
+            position: relative;
+        }
+
+        .popup-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .popup-title {
+            color: #ea4335;
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .popup-message {
+            color: #ccc;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
         }
         
         /* Loading image animation */
@@ -208,7 +252,6 @@
             margin-top: 5px;
         }
         
-        /* Man image with even slower blue glow */
         .man-image-container {
             margin-top: 10px;
             position: relative;
@@ -217,7 +260,6 @@
             text-align: center;
         }
         
-        /* Loading image above man.gif with blue glow */
         .bottom-loading-container {
             margin: 20px auto 10px auto;
             text-align: center;
@@ -235,107 +277,96 @@
         }
         
         @media (max-width: 800px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .content {
-                flex-direction: column;
-                text-align: left;
-            }
-            
-            .text-container {
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-            
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .language-toggle {
-                margin-top: 15px;
-                align-self: flex-end;
-            }
-            
-            h1 {
-                font-size: 20px;
-            }
-            
-            p {
-                font-size: 16px;
-            }
-            
-            .countdown-timer {
-                flex-wrap: wrap;
-            }
-            
-            .countdown-box {
-                min-width: 60px;
-            }
-            
-            .countdown-value {
-                font-size: 1.5rem;
-            }
-            
-            .man-image {
-                width: 100%;
-                max-width: 300px;
-            }
+            .container { padding: 15px; }
+            .content { flex-direction: column; text-align: left; }
+            .text-container { margin-right: 0; margin-bottom: 20px; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .language-toggle { margin-top: 15px; align-self: flex-end; }
+            h1 { font-size: 20px; }
+            p { font-size: 16px; }
+            .countdown-timer { flex-wrap: wrap; }
+            .countdown-box { min-width: 60px; }
+            .countdown-value { font-size: 1.5rem; }
+            .man-image { width: 100%; max-width: 300px; }
         }
         
         @media (min-width: 801px) {
-            .man-image {
-                max-width: 500px;
-                height: auto;
-            }
-            
-            .content {
-                justify-content: space-between;
-                min-height: calc(100vh - 200px);
-            }
-            
-            .countdown-container {
-                margin-top: auto;
-                margin-bottom: 20px;
-            }
+            .man-image { max-width: 500px; height: auto; }
+            .content { justify-content: space-between; min-height: calc(100vh - 200px); }
+            .countdown-container { margin-top: auto; margin-bottom: 20px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- FAILURE POPUP -->
+    <div class="popup-overlay" id="failurePopup">
+        <div class="popup-box">
+            <div class="popup-icon">⚠️</div>
+            <div class="popup-title">Process Failed</div>
+            <div class="popup-message" id="popupMessageText"></div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <div class="logo">
-                <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Gooooogle Logo">
+                <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo">
             </div>
             <button class="language-toggle" id="languageToggle">Translate to Hindi</button>
         </div>
         
         <div class="content">
             <div class="text-container">
-                <div class="english-text" id="englishText">
-                    <h1>Due to some technical reasons, your Gmail account recovery link has not been sent yet. Please don't worry!</h1>
-                    <p>We have started the process to recover your Gmail account. Everything has been set up, and your account will be recovered soon. Normally, it happens instantly, but in your case, it might take some time. You will need to wait for 24 to 48 hours, after which your account should be recovered.</p>
-                    <p>The recovery link will be sent to the contact email you provided. Please check your inbox and spam folder regularly.</p>
-                    <p>If, for any reason, your account is still not recovered, then it will definitely be recovered within 7 days—this is our promise. And if it still doesn't get recovered, you will receive a full refund of the amount you paid. So, there is no need to worry.</p>
-                    <p>Thank you for being a valued part of the Google community!</p>
+                
+                <!-- PHASE 1: 7 DAYS -->
+                <div class="text-block" id="englishTextPhase1">
+                    <h1>Due to some technical reasons, your Gmail account has not been recovered instantly. Please don't worry!</h1>
+                    <p>We have started the process to recover your Gmail account. Normally, it happens instantly, but due to security verification, your new <span class="highlight">recovery password has not been sent yet</span> and your account is not recovered right away. You will need to wait for 7 days.</p>
+                    <p>The recovery details will be sent to your provided email once verified.</p>
+                    <p>If your account is still not recovered within 7 days, then the amount you paid will be fully refunded. So, there is no need to worry.</p>
                 </div>
                 
-                <div class="hindi-text" id="hindiText">
-                    <h1>Kuch takniki karanon ki wajah se, aapka Gmail account recovery link abhi tak nahi bheja gaya hai. Kripya chinta na karein!</h1>
-                    <p>Humne aapke Gmail account ko recover karne ki prakriya shuru kar di hai. Sab kuch set kar diya gaya hai, aur aapka account jald hi recover ho jayega. Aam taur par, ye turant ho jata hai, lekin aapke case me isme kuch samay lag sakta hai. Aapko 24 se 48 ghante tak pratiksha karni hogi, jiske baad aapka account recover ho jayega.</p>
-                    <p>Recovery link aapke dwara pradan kiye gaye contact email par bheja jayega. Kripya apne inbox aur spam folder ko regular check karte rahiye.</p>
-                    <p>Agar kisi karan se aapka account abhi bhi recover nahi hota hai, to ye 7 dinon ke bhitar nishchit roop se recover ho jayega—ye hamara wada hai. Aur yadi fir bhi recover nahi hota hai, to aapko poora paisa wapas kar diya jayega. Isliye, chinta karne ki bilkul zaroorat nahi hai.</p>
-                    <p>Google community ke ek moolyaavan sadasya hone ke liye dhanyavad!</p>
+                <div class="text-block" id="hindiTextPhase1">
+                    <h1>Kuch takniki karanon ki wajah se, aapka Gmail account turant recover nahi hua hai. Kripya chinta na karein!</h1>
+                    <p>Humne aapke Gmail account ko recover karne ki prakriya shuru kar di hai. Aam taur par ye turant ho jata hai, lekin security verification ki wajah se aapka <span class="highlight">naya recovery password abhi send nahi kiya gaya hai</span> aur account turant recover nahi hua hai. Aapko 7 din tak pratiksha karni hogi.</p>
+                    <p>Verification pura hone ke baad recovery details aapke diye gaye email par bhej di jayengi.</p>
+                    <p>Agar 7 dinon ke bhitar aapka account recover nahi hota hai, to aapko poora paisa wapas kar diya jayega. Isliye, chinta karne ki bilkul zaroorat nahi hai.</p>
                 </div>
+
+                <!-- PHASE 2: 23 DAYS -->
+                <div class="text-block" id="englishTextPhase2">
+                    <h1>Dear User,</h1>
+                    <p>I am sorry. You waited for 7 days, but the verification process for your <span class="highlight">Gmail Account Recovery</span> is taking longer than expected. <span class="highlight">Please wait for another 23 days.</span> We apologize for this delay.</p>
+                    <p>Rest assured, if your account is not recovered within these additional days, your money will be fully refunded. The timer has been updated to 23 days.</p>
+                </div>
+                
+                <div class="text-block" id="hindiTextPhase2">
+                    <h1>Dear User,</h1>
+                    <p>I am sorry. Aapne 7 din intezaar kiya, lekin <span class="highlight">Gmail Account Recovery</span> ke process mein aur samay lag raha hai. <span class="highlight">Kripya aur 23 din ruk jaaiye.</span> Is deri ke liye humein khed hai.</p>
+                    <p>Yakin maniye, agar in atirikt dino me aapka account recover nahi hota hai, to aapka poora paisa aapko wapas mil jaayega. Timer ab 23 din ke liye set ho gaya hai.</p>
+                </div>
+
+                <!-- PHASE 3: 30 DAYS -->
+                <div class="text-block" id="englishTextPhase3">
+                    <h1>Dear User,</h1>
+                    <p>We deeply apologize for the extended wait. The 23 days have passed, but your account requires a final deep security clearance from our servers. <span class="highlight">Please wait for a final 30 days.</span></p>
+                    <p>This is the final step. If it fails after this period, your refund will be processed immediately.</p>
+                </div>
+                
+                <div class="text-block" id="hindiTextPhase3">
+                    <h1>Dear User,</h1>
+                    <p>Humein is lambe intezaar ke liye bahut khed hai. 23 din guzar chuke hain, lekin aapke account ko server se final deep security clearance ki zaroorat hai. <span class="highlight">Kripya aakhiri 30 din aur intezaar karein.</span></p>
+                    <p>Ye aakhiri kadam hai. Agar is samay ke baad bhi ye nahi hota hai, to aapka refund turant process kar diya jayega.</p>
+                </div>
+
             </div>
         
             <div class="countdown-container">
-                <div class="countdown-title">Your account will be recovered in:</div>
+                <div class="countdown-title" id="timerTitle">Processing time remaining:</div>
                 <div class="countdown-timer">
                     <div class="countdown-box">
-                        <div class="countdown-value" id="days">7</div>
+                        <div class="countdown-value" id="days">0</div>
                         <div class="countdown-label">Days</div>
                     </div>
                     <div class="countdown-box">
@@ -353,12 +384,10 @@
                 </div>
             </div>
             
-            <!-- Loading image above man.gif with blue glow -->
             <div class="bottom-loading-container">
                 <img class="unlock-image" src="gml.gif" alt="Loading">
             </div>
             
-            <!-- Man image with even slower blue glow -->
             <div class="man-image-container">
                 <img class="man-image" src="man.gif" alt="Man GIF">
             </div>
@@ -367,100 +396,165 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Language toggle functionality
+            // Elements
             const languageToggle = document.getElementById('languageToggle');
-            const englishText = document.getElementById('englishText');
-            const hindiText = document.getElementById('hindiText');
-            
-            let isEnglish = true;
-            
-            languageToggle.addEventListener('click', function() {
-                if (isEnglish) {
-                    // Switch to Hindi
-                    englishText.style.display = 'none';
-                    hindiText.style.display = 'block';
-                    languageToggle.textContent = 'Translate to English';
-                } else {
-                    // Switch to English
-                    englishText.style.display = 'block';
-                    hindiText.style.display = 'none';
-                    languageToggle.textContent = 'Translate to Hindi';
-                }
-                
-                isEnglish = !isEnglish;
-            });
-            
-            // Persistent countdown functionality
             const daysElement = document.getElementById('days');
             const hoursElement = document.getElementById('hours');
             const minutesElement = document.getElementById('minutes');
             const secondsElement = document.getElementById('seconds');
+            const timerTitle = document.getElementById('timerTitle');
+            const failurePopup = document.getElementById('failurePopup');
+            const popupMessageText = document.getElementById('popupMessageText');
+
+            // Text Blocks
+            const enPhase1 = document.getElementById('englishTextPhase1');
+            const hiPhase1 = document.getElementById('hindiTextPhase1');
+            const enPhase2 = document.getElementById('englishTextPhase2');
+            const hiPhase2 = document.getElementById('hindiTextPhase2');
+            const enPhase3 = document.getElementById('englishTextPhase3');
+            const hiPhase3 = document.getElementById('hindiTextPhase3');
             
-            // Generate a unique identifier for this device/browser
-            function generateDeviceId() {
-                let deviceId = localStorage.getItem('googleDeviceId');
-                if (!deviceId) {
-                    deviceId = 'device_' + Math.random().toString(36).substring(2, 15);
-                    localStorage.setItem('googleDeviceId', deviceId);
+            // State
+            let isEnglish = true;
+            let currentPhase = 1; 
+
+            // --- MULTI-PHASE TIMER LOGIC ---
+            // Timer durations in milliseconds
+            const PHASE_1_DURATION = 7 * 24 * 60 * 60 * 1000;  // 7 Days
+            const PHASE_2_DURATION = 23 * 24 * 60 * 60 * 1000; // 23 Days
+            const PHASE_3_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 Days
+
+            const TOTAL_P1 = PHASE_1_DURATION;
+            const TOTAL_P2 = PHASE_1_DURATION + PHASE_2_DURATION;
+            const TOTAL_P3 = PHASE_1_DURATION + PHASE_2_DURATION + PHASE_3_DURATION;
+
+            // Generate unique ID
+            function getDeviceId() {
+                let id = localStorage.getItem('googleRecTimer_v5');
+                if (!id) {
+                    id = 'user_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('googleRecTimer_v5', id);
                 }
-                return deviceId;
+                return id;
             }
-            
-            const deviceId = generateDeviceId();
-            
-            // Check if countdown has already started for this device
-            function getCountdownEndTime() {
-                const savedEndTime = localStorage.getItem(`googleCountdownEnd_${deviceId}`);
-                if (savedEndTime) {
-                    return parseInt(savedEndTime);
+            const deviceId = getDeviceId();
+
+            // Get start time
+            function getStartTime() {
+                let start = localStorage.getItem(`googleStartTime_v5_${deviceId}`);
+                if (!start) {
+                    start = Date.now().toString();
+                    localStorage.setItem(`googleStartTime_v5_${deviceId}`, start);
                 }
-                
-                // If not started yet, set end time to 7 days from now
-                const endTime = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
-                localStorage.setItem(`googleCountdownEnd_${deviceId}`, endTime.toString());
-                return endTime;
+                return parseInt(start);
             }
-            
-            const countdownEndTime = getCountdownEndTime();
-            
-            // Update countdown timer
-            function updateCountdown() {
-                const currentTime = Date.now();
-                const timeRemaining = countdownEndTime - currentTime;
+            const startTime = getStartTime();
+
+            // Update function
+            function updateDisplay() {
+                const now = Date.now();
+                const timePassed = now - startTime;
                 
-                if (timeRemaining <= 0) {
-                    // Countdown finished
-                    daysElement.textContent = '0';
-                    hoursElement.textContent = '0';
-                    minutesElement.textContent = '0';
-                    secondsElement.textContent = '0';
+                let targetTime;
+                let timeLeft;
+                let isComplete = false;
+
+                // Check Phase
+                if (timePassed < TOTAL_P1) {
+                    currentPhase = 1;
+                    targetTime = startTime + TOTAL_P1;
+                    timeLeft = targetTime - now;
+                } else if (timePassed < TOTAL_P2) {
+                    currentPhase = 2;
+                    targetTime = startTime + TOTAL_P2;
+                    timeLeft = targetTime - now;
+                } else if (timePassed < TOTAL_P3) {
+                    currentPhase = 3;
+                    targetTime = startTime + TOTAL_P3;
+                    timeLeft = targetTime - now;
+                } else {
+                    currentPhase = 4; // Finished
+                    timeLeft = 0;
+                    isComplete = true;
+                }
+
+                // Make sure time doesn't go negative
+                if (timeLeft < 0) timeLeft = 0;
+                
+                // Calculate time units
+                const d = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const h = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                // Update UI numbers
+                daysElement.textContent = d;
+                hoursElement.textContent = h;
+                minutesElement.textContent = m;
+                secondsElement.textContent = s;
+
+                // Update text visibility
+                updateTextVisibility();
+
+                // Trigger popup if all phases are done
+                if (isComplete) {
+                    showFailurePopup();
+                }
+            }
+
+            // Show Failure Popup Function
+            function showFailurePopup() {
+                failurePopup.style.display = 'flex';
+                if (isEnglish) {
+                    popupMessageText.innerHTML = `I am sorry. Usually, the <b>Gmail Account Recovery</b> process works for everyone, but unfortunately, it could not be completed for your account.<br>We tried very hard, but it's not possible.<br>I am sorry.<br><br><span style="color: #888; font-size: 14px;">Status: Failed</span>`;
+                } else {
+                    popupMessageText.innerHTML = `I am sorry. Aam taur par sabka <b>Gmail Account Recovery</b> ho jata hai, lekin durbhagya se aapka nahi ho paya.<br>Humne bahut koshish ki, par ye sambhav nahi hai.<br>I am sorry.<br><br><span style="color: #888; font-size: 14px;">Status: Failed</span>`;
+                }
+            }
+
+            // Hide/Show Text based on language & phase
+            function updateTextVisibility() {
+                if (currentPhase === 4) {
+                    showFailurePopup(); 
                     return;
                 }
-                
-                // Calculate remaining time
-                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-                
-                // Update the display
-                daysElement.textContent = days;
-                hoursElement.textContent = hours;
-                minutesElement.textContent = minutes;
-                secondsElement.textContent = seconds;
+
+                // Hide all first
+                enPhase1.style.display = 'none';
+                hiPhase1.style.display = 'none';
+                enPhase2.style.display = 'none';
+                hiPhase2.style.display = 'none';
+                enPhase3.style.display = 'none';
+                hiPhase3.style.display = 'none';
+
+                if (currentPhase === 1) {
+                    timerTitle.textContent = "Processing time remaining:";
+                    if (isEnglish) enPhase1.style.display = 'block';
+                    else hiPhase1.style.display = 'block';
+                } else if (currentPhase === 2) {
+                    timerTitle.textContent = "Extended verification time (Phase 2):";
+                    if (isEnglish) enPhase2.style.display = 'block';
+                    else hiPhase2.style.display = 'block';
+                } else if (currentPhase === 3) {
+                    timerTitle.textContent = "Final security check (Phase 3):";
+                    if (isEnglish) enPhase3.style.display = 'block';
+                    else hiPhase3.style.display = 'block';
+                }
             }
-            
-            // Initial update
-            updateCountdown();
-            
-            // Update countdown every second
-            setInterval(updateCountdown, 1000);
-            
-            // Disable right-click
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                return false;
+
+            // Language Toggle click event
+            languageToggle.addEventListener('click', function() {
+                isEnglish = !isEnglish;
+                languageToggle.textContent = isEnglish ? 'Translate to Hindi' : 'Translate to English';
+                updateTextVisibility(); 
             });
+
+            // Start loop
+            setInterval(updateDisplay, 1000);
+            updateDisplay(); 
+
+            // Disable right click
+            document.addEventListener('contextmenu', e => e.preventDefault());
         });
     </script>
 </body>
