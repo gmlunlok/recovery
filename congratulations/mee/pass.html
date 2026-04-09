@@ -30,7 +30,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Center the container vertically */
+            justify-content: center;
         }
         
         body::before {
@@ -44,7 +44,6 @@
             z-index: -1;
         }
 
-        /* Top Left Google Logo */
         .header {
             position: absolute;
             top: 20px;
@@ -69,7 +68,6 @@
             100% { filter: drop-shadow(0 0 20px rgba(66, 103, 178, 1)); }
         }
 
-        /* Main Container for Gmail & Password */
         .container {
             background-color: rgba(20, 20, 20, 0.85);
             padding: 40px;
@@ -113,12 +111,29 @@
         }
 
         .value.password {
-            color: #39FF14; /* Green color for password */
+            color: #39FF14;
             font-family: monospace;
             letter-spacing: 3px;
+            margin-bottom: 15px;
         }
 
-        /* Mobile Responsive adjustments */
+        /* Naya button style */
+        .btn-change {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .btn-change:hover {
+            background-color: #3367d6;
+        }
+
         @media (max-width: 600px) {
             .header {
                 top: 15px;
@@ -132,14 +147,12 @@
 </head>
 <body>
 
-    <!-- Header with Logo only -->
     <div class="header">
         <div class="logo">
             <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo">
         </div>
     </div>
 
-    <!-- Main Content Container -->
     <div class="container">
         <div class="item">
             <span class="title">Recovery Gmail</span>
@@ -148,29 +161,22 @@
 
         <div class="item">
             <span class="title">Password</span>
-            <span class="value password" id="password-value">********</span>
+            <span class="value password" id="password-value">2HHd02@xwwQ</span>
+            <button class="btn-change" onclick="changePassword()">Change Password</button>
         </div>
     </div>
 
     <script>
-        // 6 digit ka random strong password generate karne ka function
-        function generateStrongPassword(length = 6) {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-            let result = '';
-            const charactersLength = characters.length;
-            for (let i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        // Password manually change/renew karne ka function
+        function changePassword() {
+            // User se naya password maangne ke liye prompt
+            let newPassword = prompt("Enter new password:", "");
+            
+            // Agar user ne cancel nahi kiya aur kuch type kiya hai, toh update kar do
+            if (newPassword !== null && newPassword.trim() !== "") {
+                document.getElementById('password-value').textContent = newPassword;
             }
-            return result;
         }
-
-        // Page load/refresh hone par automatically password change hoga
-        window.onload = function() {
-            const passwordElement = document.getElementById('password-value');
-            if (passwordElement) {
-                passwordElement.textContent = generateStrongPassword(6);
-            }
-        };
     </script>
 
 </body>
