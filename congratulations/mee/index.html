@@ -73,7 +73,7 @@
         .success-circle svg {
             width: 32px;
             height: 32px;
-            fill: #188038; /* Google Official Green */
+            fill: #0f9d58; /* Google Official Green */
         }
 
         @keyframes popIn {
@@ -96,7 +96,7 @@
             line-height: 1.5;
         }
 
-        /* --- GLOWING TIMER STYLES --- */
+        /* --- STATIC TIMER STYLES (No Blinking, Clear Drop Shadow) --- */
         .timer-wrapper {
             margin-top: 5px;
             display: flex;
@@ -105,20 +105,16 @@
         }
 
         #timer {
-            font-size: 45px; /* Size aur bada kar diya */
+            font-size: 45px; 
             font-weight: 900;
-            color: #188038; /* Google Deep Green */
-            /* Deep Green Glow Effect */
-            text-shadow: 0 0 15px rgba(24, 128, 56, 0.7), 0 0 25px rgba(24, 128, 56, 0.5);
+            color: #0f9d58; /* Solid, strong Google Green */
+            
+            /* Clean black drop shadow for depth + slight green shadow for premium feel */
+            text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2), 0 0 12px rgba(15, 157, 88, 0.35);
+            
             min-width: 50px;
             line-height: 1;
-            /* Pulse animation glow ke liye */
-            animation: pulseGlow 1.2s infinite alternate;
-        }
-
-        @keyframes pulseGlow {
-            from { text-shadow: 0 0 10px rgba(24, 128, 56, 0.5), 0 0 20px rgba(24, 128, 56, 0.3); transform: scale(1); }
-            to { text-shadow: 0 0 20px rgba(24, 128, 56, 1), 0 0 35px rgba(24, 128, 56, 0.8); transform: scale(1.05); }
+            /* Blinking animation hata di gayi hai */
         }
 
         /* --- LOADING OVERLAY --- */
