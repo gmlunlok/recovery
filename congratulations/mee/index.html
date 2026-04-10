@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Account Recovery Success</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
@@ -92,32 +92,33 @@
         p.info-text {
             font-size: 16px;
             color: #5f6368;
-            margin: 0 0 30px 0;
+            margin: 0 0 25px 0;
             line-height: 1.5;
         }
 
-        /* --- TIMER STYLES --- */
+        /* --- GLOWING TIMER STYLES --- */
         .timer-wrapper {
-            background-color: #f8f9fa;
-            border: 1px solid #dadce0;
-            border-radius: 24px; /* Pill shape */
-            padding: 8px 24px;
-            display: inline-flex;
+            margin-top: 5px;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-        }
-
-        .timer-text {
-            font-size: 15px;
-            color: #5f6368;
-            font-weight: 500;
         }
 
         #timer {
-            font-size: 24px; /* Pehle 16px tha, ab bada kar diya */
-            font-weight: 700;
-            color: #1a73e8; /* Google Blue */
-            min-width: 28px;
+            font-size: 45px; /* Size aur bada kar diya */
+            font-weight: 900;
+            color: #188038; /* Google Deep Green */
+            /* Deep Green Glow Effect */
+            text-shadow: 0 0 15px rgba(24, 128, 56, 0.7), 0 0 25px rgba(24, 128, 56, 0.5);
+            min-width: 50px;
+            line-height: 1;
+            /* Pulse animation glow ke liye */
+            animation: pulseGlow 1.2s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            from { text-shadow: 0 0 10px rgba(24, 128, 56, 0.5), 0 0 20px rgba(24, 128, 56, 0.3); transform: scale(1); }
+            to { text-shadow: 0 0 20px rgba(24, 128, 56, 1), 0 0 35px rgba(24, 128, 56, 0.8); transform: scale(1.05); }
         }
 
         /* --- LOADING OVERLAY --- */
@@ -157,6 +158,7 @@
             }
             h1 { font-size: 22px; }
             p.info-text { font-size: 15px; }
+            #timer { font-size: 40px; }
         }
     </style>
 </head>
@@ -182,7 +184,6 @@
         </p>
 
         <div class="timer-wrapper">
-            <span class="timer-text">Redirecting in</span>
             <span id="timer">10</span>
         </div>
 
@@ -195,7 +196,6 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const timerSpan = document.getElementById('timer');
-            const mainContainer = document.getElementById('main-container');
             const loadingOverlay = document.getElementById('loading-overlay');
             
             let timeLeft = 10;
@@ -212,10 +212,7 @@
             }, 1000);
 
             function startLoadingSequence() {
-                // YAHAN CHANGE KIYA HAI: Ab main container hide nahi hoga
-                // mainContainer.style.display = 'none'; 
-                
-                // Show transparent blurred loading screen
+                // Show transparent blurred loading screen over the existing page
                 loadingOverlay.style.display = 'flex';
 
                 // Wait 3 seconds then redirect
